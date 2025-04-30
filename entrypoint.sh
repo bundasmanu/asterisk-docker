@@ -27,6 +27,9 @@ update_vars() {
         echo "Processing $filename"
         envsubst < "$file" > "$tmpfile" && mv "$tmpfile" "$ASTERISK_ETC_DIR/$filename"
     done
+
+    cp -rp "$ASTERISK_TEMP_ETC_DIR/extensions.conf" $ASTERISK_ETC_DIR/ 2>/dev/null || true
+
 }
 
 add_permissions() {

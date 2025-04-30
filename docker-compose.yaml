@@ -1,0 +1,48 @@
+services:
+
+  asterisk:
+    build:
+      context: ./
+      dockerfile: Dockerfile  # Dockerfile to fetch SQL scripts
+      args:
+        ASTERISK_BRANCH: ${ASTERISK_BRANCH:-22.3.0}
+        ASTERISK_MODULES_ENABLE: ${ASTERISK_MODULES_ENABLE}
+        ASTERISK_MODULES_DISABLE: ${ASTERISK_MODULES_DISABLE}
+        ASTERISK_CATEGORY_DISABLE: ${ASTERISK_CATEGORY_DISABLE}
+        ASTERISK_USER: ${ASTERISK_USER:-root}
+        ASTERISK_GROUP: ${ASTERISK_GROUP:-root}
+    environment:
+      - ASTERISK_CACHE_DIR=${ASTERISK_CACHE_DIR}
+      - ASTERISK_ETC_DIR=${ASTERISK_ETC_DIR}
+      - ASTERISK_MOD_DIR=${ASTERISK_MOD_DIR}
+      - ASTERISK_VARLIB_DIR=${ASTERISK_VARLIB_DIR}
+      - ASTERISK_DB_DIR=${ASTERISK_DB_DIR}
+      - ASTERISK_KEY_DIR=${ASTERISK_KEY_DIR}
+      - ASTERISK_DATA_DIR=${ASTERISK_DATA_DIR}
+      - ASTERISK_AGI_DIR=${ASTERISK_AGI_DIR}
+      - ASTERISK_POOL_DIR=${ASTERISK_POOL_DIR}
+      - ASTERISK_RUN_DIR=${ASTERISK_RUN_DIR}
+      - ASTERISK_LOG_DIR=${ASTERISK_LOG_DIR}
+      - ASTERISK_BIN_DIR=${ASTERISK_BIN_DIR}
+      - ASTERISK_USER=${ASTERISK_USER}
+      - ASTERISK_GROUP=${ASTERISK_GROUP}
+      - ASTERISK_TEMP_ETC_DIR=${ASTERISK_TEMP_ETC_DIR}
+    container_name: asterisk
+    volumes:
+      - ./conf/:${ASTERISK_TEMP_ETC_DIR}
+      - ./log/:${ASTERISK_LOG_DIR}
+      - ./run/:${ASTERISK_RUN_DIR}
+    networks:
+      common-network:
+        ipv4_address: 172.25.0.20
+    cap_add:
+      - NET_ADMIN
+      - SYS_TIME
+      - SYS_NICE
+    tty: true
+    privileged: true
+    platform: linux/amd64
+
+networks:
+  common-network:
+    external: true
